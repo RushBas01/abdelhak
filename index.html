@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="src/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/amiri.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <title>ABDELHAQ SRAI</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            border: 0;
+            box-sizing: border-box;
+        }
+        body{
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        header {
+            display: flex;
+            flex-direction: row;
+            position: absolute;
+            align-items: center;
+            top: 0;
+            left: 0;
+            width: 100%;
+            justify-content: center;
+            gap: 20vw;
+            z-index: 999;
+        }
+        header .logo{
+            width: auto;
+            height: auto;
+            max-width: 10vw;
+            max-height: 10vh;
+        }
+        header .title{
+            display: none;
+        }
+        header ul{
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 5vw;
+        }
+        header a{
+            text-decoration: none;
+            color: #D4AF37;
+            text-shadow: 0px 0px 10px #F3E08D;
+            font-family:'Amiri', serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        header a:hover{
+            text-decoration: underline;
+        }
+        .option-img{
+            display: none;
+        }
+        .welcome-section{
+            z-index: 0;
+            top: 0;
+            position: relative;
+            min-height: 50vh;
+        }
+        .welcome-section > img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .welcome-section::after{
+            content: "";
+            background-color: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            z-index: 1;
+            inset: 0;
+            background: linear-gradient(
+                to right,
+                rgba(0,0,0,0.5) 0%,
+                rgba(0,0,0,0.5) 15%,
+                rgba(0,0,0,0.5) 40%,
+                rgba(255,255,255,0) 85%,
+                rgba(0,0,0,0) 100%
+            );
+        }
+        .welcome-section div{
+            display: flex;
+            flex-direction: column;
+            gap: 5vh;
+            position: absolute;
+            align-items: center;
+            left: 10vw;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            
+        }
+        .welcome-section div span{
+            color: #ffde49;
+            /*font-family:'Amiri', serif;
+            font-style: italic;*/
+            font-family: "Aref Ruqaa" ,serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            font-style: normal;
+            animation: scaling 4s ease infinite;
+        }
+        .welcome-section div a{
+            /*color: #0B1B2B;*/
+            color: #D4AF37;
+            text-shadow: 0px 0px 12px rgba(243, 224, 141, 0.6);
+            text-decoration: none;
+            background-color: rgba(143, 107, 32, 0.6);
+            border: 1px groove #0B1B2B;
+            border-radius: 4vw;
+            padding: 1vh 2vw;
+            box-shadow: 0px 0px 12px #F3E08D;
+            font-weight: 700;
+            font-family:'Droid Arabic Naskh', serif;
+            /**/
+            transition: all 0.25s ease;
+        }
+        .welcome-section div a:hover{
+            background-color: #F3E08D;
+            box-shadow: 0px 0px 25px #F3E08D;
+            color: black;
+            transform: scale(1.2);
+        }
+        .welcome-section div p{
+            color: #ffffff;
+            text-align: center;
+            font-family:'Amiri', serif;
+            font-weight: 400;
+            font-size: 1.1rem;
+            
+        }
+        @keyframes scaling {
+            from {transform: scale(1);}
+            50% {transform: scale(1.2);}
+            to {transform: scale(1);}
+        }
+        .service-section{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width:80%;
+            margin: 10vh 10vw 10vh 10vw;
+            align-items: center;
+            gap: 5vw;
+        }
+        .service-section div:not(.line){
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1vh;
+            margin-bottom: 1vh;
+            gap: 2vh;
+        }
+        .service-section div span{
+            color:#0B1B2B;
+            font-family:'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            align-items:center;
+            text-align: center;
+            display: flex;
+        }
+        .service-section .line{
+            width:2px;
+            height: 15vh;
+            background-color: black;
+        }
+        .service-section div img{
+            object-fit: contain;
+            width: 10vw;
+            max-height: 10vh;
+            filter: drop-shadow(0px 10px 12px rgba(11, 27, 43, 0.5));
+        }
+        .bestworks-section{
+            display: flex;
+            flex-direction:column;
+            justify-content: center;
+            align-items: center;
+            gap: 5vh;
+            width: 80%;
+            margin: 10vh 10vw 10vh 10vw;
+        }
+        .bestworks-section .title{
+            color:black;
+            font-family:'Amiri', serif;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        .bestworks-section .content{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 5vw;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .bestworks-section .content .location{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2vw;
+            border: 1px solid #0B1B2B;
+            padding: 1vh 2vw;
+            width: 40%;
+            height: auto;
+            border-radius: 2vw;
+            box-shadow: 10px 10px 12px black;
+        }
+        .bestworks-section .content .location img{
+            width: auto;
+            height: 10vh;
+        }
+        .bestworks-section .content .location .line{
+            width:2px;
+            height: 100%;
+            background-color: #0B1B2B;
+        }
+        .bestworks-section .content .location .details{
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+        }
+        .bestworks-section .content .location .details span{
+            color:#0B1B2B;
+            font-family:'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: underline;
+        }
+        .bestworks-section .content .location .details span a{
+            text-decoration: none;
+            color: #0B1B2B;
+        }
+        .bestworks-section .content .location .details a:not(span a){
+            position: relative;
+            color:white;
+            background-color: #0B1B2B;
+            text-decoration: none;
+            padding: 0.5vh 1vw;
+            border-radius: 1vw;
+            width: fit-content;
+            left: 0;
+            font-family:'Amiri', serif;
+            flex: 1;
+            align-self: flex-end;
+            text-align: center;
+            border-right: 2px solid #D4AF37;
+            border-bottom: 2px solid #D4AF37;
+            transition: all 0.25s ease;
+        }   
+        .bestworks-section .content .location .details a:not(span a):hover{
+            background-color: #D4AF37;
+            color: black;
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+        .bestworks-section .content .location .details p{
+            font-family:'Amiri', serif;
+            font-size: 1rem;
+            color: rgb(100,100,100);
+        }
+        .map-section{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width:80%;
+            margin: 10vh 8vw 10vh 8vw;
+            align-items: center;
+            gap: 5vw;
+        }  
+        .map-section .title{
+            color: black;
+            font-family:'Amiri', serif;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        .map-section .content{
+            display: flex;
+            flex-direction: row;
+            flex:1;
+            align-self: flex-start;
+            align-items: center;
+            gap: 5vw;
+        }
+        .map-section .content iframe{
+            width: 50vw;
+            height: 50vh;
+            border: 1px solid #0B1B2B;
+            border-radius: 2vw;
+            box-shadow: 10px 10px 12px black;
+        }
+        .map-section .content .details{
+            display: flex;
+            width: fit-content;
+            flex-direction: column;
+            gap: 4vh;
+            flex:1;
+        }
+        .map-section .content .details a{
+            position: relative;
+            color:white;
+            background-color: #0B1B2B;
+            text-decoration: none;
+            padding: 0.5vh 1vw;
+            border-radius: 1vw;
+            width: fit-content;
+            left: 0;
+            font-family:'Amiri', serif;
+            flex: 1;
+            align-self: flex-end;
+            text-align: center;
+            border-right: 2px solid #D4AF37;
+            border-bottom: 2px solid #D4AF37;
+            transition: all 0.25s ease;
+            
+        }
+        .map-section .content .details a:hover{
+            background-color: #D4AF37;
+            color: black;
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+        .map-section .content .details span{
+            color:#0B1B2B;
+            font-family:'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .media-section{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width:80%;
+            margin: 10vh 10vw 10vh 10vw;
+            align-items: center;
+            gap: 5vw;
+        }
+        .media-section .title{
+            color: black;
+            font-family:'Amiri', serif;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        .media-section .content{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 5vw;
+            flex-flow:wrap;
+            width: 100%;
+        }
+        .media-section .content div:not(.details){
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border: 1px solid #0B1B2B;
+            border-radius: 1vw;
+            padding: 0.5vh 1vw;
+            gap: 1vw;
+            width: 40%;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .media-section .content div:not(.details):hover{
+            background-color: #0B1B2B;
+            color: white;
+            transform: scale(1.1);
+        }
+        .media-section .content div .details{
+            display: flex;
+            flex-direction: column;
+        }
+        .media-section .content div .details a{
+            text-decoration: none;
+            color: black;
+        }
+        .media-section .content div .details span{
+            font-family: "Amiri", serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .media-section .content div .details p{
+            font-family: "Amiri", serif;
+            font-size: 1.1rem;
+        }
+        .media-section .content img{
+            width: 5vw;
+            max-height: auto;
+            filter: drop-shadow(5px 5px 5px black);
+            transition: all 0.5s ease;
+        }
+        .media-section .content div:hover .details a{
+            color: white;
+        }
+        .media-section .content div:hover img:not(.avito img){
+            width: 5vw;
+            max-height: auto;
+            filter: drop-shadow(5px 5px 5px white);
+        }
+        .media-section .content .avito img{
+            width: 4vw;
+            max-height: auto;
+            transition: all 0.5s ease;
+        }
+        .media-section .content .avito:hover img{
+            width: 4vw;
+            max-height: auto;
+            filter: drop-shadow(5px 5px 5px white);
+        }
+        .why-section{
+            display: flex;
+            flex-direction:column;
+            justify-content: center;
+            align-items: center;
+            gap: 5vh;
+            margin: 10vh 10vw 10vh 10vw;
+        }   
+        .why-section div{
+            display: flex;
+            flex-direction:row;
+            gap:2vw;
+            align-items: center;
+        }
+        .why-section .line{
+            width:2px;
+            height: 4vh;
+            background-color: #0B1B2B;
+            box-shadow: 0px 0px 12px black;
+        }
+        .why-section span{
+            color:#000000;
+            font-family:'Amiri', serif;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        .why-section div p{
+            color: #0B1B2B;
+            font-family:'Amiri', serif;
+            font-size: 1.2rem;
+        }
+        footer{
+            background-color: #0B1B2B;
+            color: white;
+            align-content: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2vh 0vw;
+            font-family: "Amiri", serif;
+
+        }
+        /*
+        .service-section div .home-icon{
+            width: 10vw;
+            filter: drop-shadow(0px 10px 12px rgba(11, 27, 43, 0.5));
+        }
+        .service-section div .location-icon{
+            width: 7vw;
+            filter: drop-shadow(0px 10px 12px rgba(11, 27, 43, 0.5));
+        }
+        .service-section div .gestion-icon{
+            width: 7vw;
+            filter: drop-shadow(0px 10px 12px rgba(11, 27, 43, 0.5));
+        }
+        .service-section div .invest-icon{
+            width: 10vw;
+            filter: drop-shadow(0px 10px 12px rgba(11, 27, 43, 0.5));
+        }*/
+        @media screen and (max-width: 768px) {
+            header {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                justify-content: center;
+                align-items: center;
+                align-self: center;
+            }
+            header ul, header .logo{
+                display: none !important;
+            }
+            header .title{
+                display: flex;
+                max-width: 50%;
+                height: auto;
+
+            }
+            .welcome-section{
+                position: relative;
+                display: flex;
+                min-height: fit-content;
+            }
+            .welcome-section::after{
+                position: relative;
+            }
+            .welcome-section > img{
+                display: flex;
+                max-height: 100%;
+                max-width: 100%;
+                object-fit:contain;
+            }
+            .welcome-section div{
+                gap: 2vh;
+                top: 50%;
+            }
+            .welcome-section div span{
+                font-size: 2rem;
+            }
+            .welcome-section div a{
+                font-size: 0.8rem;
+            }
+            .welcome-section div p{
+                font-size: 0.8rem;
+            }
+            .bestworks-section .content .location{
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .map-section .content{
+                flex-wrap: wrap;
+            }
+            .map-section .content iframe{
+                width: 100%;
+            }
+            .media-section .content div:not(.details){
+                width: 100%;
+            }
+            .media-section .content img{
+                width: 10vw;
+            }
+            .media-section .content .avito img{
+                width: 8vw;
+            }
+            .media-section .content div:not(.details):hover img:not(.avito img){
+                width: 10vw;                
+            }
+            .media-section .content .avito:hover img{
+                width: 8vw;
+            }
+            .why-section{
+                width: 80%;
+            }
+            .why-section div{
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+            .why-section .line{
+                display: none;
+            }
+            .why-section div p{
+                font-size: 1.5rem;
+                width: 100%;
+                text-align: center;
+                border-right: 4px solid black;
+            }
+        }
+    </style>
+    <script>
+        document.querySelector(".logo").remove();
+        document.querySelector("ul").remove();
+    </script>
+</head>
+<body dir="rtl">
+    <header>
+        <img class="logo" src="src/logo.png" alt="">
+        <img class="title" src="src/title.png" alt="">
+        <ul>
+            <li><a href="#service-section">الرئيسية</a></li>
+            <li><a href="#bestworks-section">أبرز أعمالنا</a></li>
+            <li><a href="#map-section">موقعنا</a></li>
+            <li><a href="#why-section">لماذا نحن</a></li>
+            <li><a href="#media-section">تواصل معنا</a></li>
+        </ul>
+    </header>
+    <main>
+        <section class="welcome-section" id="welcome-section">
+            <img src="src/bg.jpeg" alt="">
+            <div>
+                <span>مـشـروعـك، أولوياتـنا</span>
+                <p>وسطاء عقاريون في خدمة طموحاتك<br>لبناء مستقبل معا بإذن اللّه.</p>
+                <a href="#service-section">اســتــكــشـف خــدمـــاتــنـــا</a>
+            </div>
+        </section>
+        <section class="service-section" id="service-section">
+            <div>
+                <img src="src/home-icon.png" class="home-icon">
+                <span>بيع</span>
+            </div>
+            <div class="line"></div>
+            <div>
+                <img src="src/location-icon.png" class="location-icon">
+                <span>إيجار</span>
+            </div>
+            <div class="line"></div>
+            <div>
+                <img src="src/gestion-icon.png" class="gestion-icon">
+                <span>إدراة</span>
+            </div>
+            <div class="line"></div>
+            <div>
+                <img src="src/invest-icon.png" class="invest-icon">
+                <span>استثمار</span>
+            </div>
+        </section>
+        <section class="bestworks-section" id="bestworks-section">
+            <span class="title">أبرز أعمالنا</span>
+            <div class="content">
+                <div class="location">
+                    <img src="src/logo.png">
+                    <div class="line"></div>
+                    <div class="details">
+                        <span><a href="">الموقع 1</a></span>
+                        <p>الوصف للموقع بكل شيء</p>
+                        <a href="#media-section">تريد مثله ؟</a>
+                    </div>
+                </div>
+                <div class="location">
+                    <img src="src/logo.png">
+                    <div class="line"></div>
+                    <div class="details">
+                        <span><a href="">الموقع 2</a></span>
+                        <p>الوصف للموقع بكل شيء</p>
+                        <a href="#media-section">تريد مثله ؟</a>
+                    </div>
+                </div>
+                <div class="location">
+                    <img src="src/logo.png">
+                    <div class="line"></div>
+                    <div class="details">
+                        <span><a href="">الموقع 3</a></span>
+                        <p>الوصف للموقع بكل شيء</p>
+                        <a href="#media-section">تريد مثله ؟</a>
+                    </div>
+                </div>
+            </div>
+       </section>
+       <section class="map-section" id="map-section">
+            <span class="title">موقع وكالتنا</span>
+            <div class="content">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d2801.4662026184487!2d-6.898437724288359!3d33.94009757319951!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzPCsDU2JzI0LjQiTiA2wrA1Myc0NS4xIlc!5e1!3m2!1sfr!2sma!4v1791120139150!5m2!1sfr!2sma" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                <div class="details">
+                    <span>380 القطاع 1 رياض ولاد مطاع تمارة</span>
+                    <p>تقع وكالتنا العقارية في الزقاق الذي يطل على مسجد أبي بكر الصديق و الإمام مسلم، التي توالي مباشرة صالة رياضية للفنون القتالية و مقابلة لبقالة غذائية.</p>
+                    <a href="https://www.google.com/maps?ll=33.940062,-6.896442&z=16&t=h&hl=fr&gl=MA&mapclient=embed&q=33%C2%B056%2724.4%22N+6%C2%B053%2745.1%22W+33.940111,+-6.895861@33.9401111,-6.895861099999999">افتح على Google Maps</a>
+                </div>
+            </div>
+        </section>
+        <section class="media-section" id="media-section">
+            <span class="title">تواصل معنا</span>
+            <div class="content">
+                <div class="telephone1">
+                    <img src="src/telephone.png">
+                    <div class="details">
+                        <a href="tel:+212 661-629241">
+                            <span>عبد الحق</span>
+                            <p>+212 661-629241</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="whatsapp1">
+                    <img src="src/whatsapp.png">
+                    <div class="details">
+                        <a href="https://wa.me/+212 661-629241">
+                            <span>عبد الحق</span>
+                            <p>+212 661-629241</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="telephone2">
+                    <img src="src/telephone.png">
+                    <div class="details">
+                        <a href="tel:+212 662-804858">
+                            <span>كريم</span>
+                            <p>+212 662-804858</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="whatsapp2">
+                    <img src="src/whatsapp.png">
+                    <div class="details">
+                        <a href="https://wa.me/+212 662-804858">
+                            <span>كريم</span>
+                            <p>+212 662-804858</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="telephone3">
+                    <img src="src/telephone.png">
+                    <div class="details">
+                        <a href="tel:+212 662-601109">
+                            <span>حمزة</span>
+                            <p>+212 662-601109</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="whatsapp3">
+                    <img src="src/whatsapp.png">
+                    <div class="details">
+                        <a href="https://wa.me/+212 662-601109">
+                            <span>حمزة</span>
+                            <p>+212 662-601109</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="avito">
+                    <img src="src/avito.png">
+                    <div class="details">
+                        <a href="https://avito.ma/">
+                            <span>Avito</span>
+                            <p>تفقد أحدث منتجاتنا</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="why-section" id="why-section">
+            <span>لماذا نحن ؟</span>
+            <div>
+                <p>الثقة تبنى معا في اللّه</p>
+                <div class="line"></div>
+                <p>خبرة فوق السبع أعوام</p>
+                <div class="line"></div>
+                <p>خدمة عملاء متميزة</p>
+                <div class="line"></div>
+                <p>أفضل النتائج بأقل الأسعار</p>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <span>&copy; وكالة عبد الحق السري. جميع الحقوق محفوظة 2026</span>
+    </footer>
+</body>
+</html>
